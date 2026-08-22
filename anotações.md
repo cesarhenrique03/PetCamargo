@@ -6,18 +6,8 @@ obetivos {
             carrinho - OK
             login - OK
             cadastro - OK
-            perfil - {
-                meus pedidos
-                meus dados
-                excluir conta (não se exclui conta pois a partir do momento que foi criada ela é um parâmetro de conta, mas precisa do botão para desativar a conta.)
-            }
-            meus dados - {
-                nome
-                rg/cpf
-                endereço
-                email
-                senha
-            }
+            perfil - OK
+            meus dados - OK
         }
         ADM {
             home - OK
@@ -25,28 +15,12 @@ obetivos {
             edição do pedido - OK
             produtos - OK 
             cadastro produtos - OK
-            destaques/promoções - () {
-                lista de destaques e promoções ativas
-                filtro de pesquisa {
-                    por nome
-                    por data de encerramento
-                }
-            } 
-            cadastro de destaques/promoções - () {
-                para destaques {
-                    pedir foto
-                    titulo - para saber do que se trata
-                    (esse é só um card que ficara na pagina inicial, não precisa de muita coisa)
-                }
-                para promoções {
-                    pedir produto que terá a promoção
-                    valor do produto na promoção
-                    se quiser alterar a foto do produto que estiver na promoção, para algo mais chamativo... não obrigatório
-                }
-            }
+            destaques/promoções - OK
+            cadastro de destaques/promoções - OK
         }
     }
 }
+
 
 # Requisitos funcionais
 {
