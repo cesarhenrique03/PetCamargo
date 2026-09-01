@@ -5,28 +5,50 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/app/components/details/button";
 
+// Criação da array para slides.
 const slides = [
-  { id: 1, title: "10 ANOS" },
-  { id: 2, title: "20 ANOS" },
-  { id: 3, title: "30 ANOS" },
+  { id: 1, title: "40 ANOS" },
+  { id: 2, title: "10 ANOS" },
+  { id: 3, title: "20 ANOS" },
+  { id: 4, title: "30 ANOS" }
 ];
 
 export default function Carousel() {
+  // Estado inicial dos cards do carrossel.
   const [visibleOrder, setVisibleOrder] = useState<number[]>([
-    slides.length - 1,
-    0,
-    1,
+    0, //primeiro da esquerda
+    1, //central
+    2, //Direita
   ]);
+
+  //esse é o primeiro da esquerda, o card central sempre vai ser o current + 1;
   const current = visibleOrder[0];
 
-  const goToPrev = () => {
-    setVisibleOrder((prev) => prev = slides.length - 1 ? [prev[slides.length - 1], prev[0], prev[0 + 1]] : [prev[0 - 1], prev[0], prev[0+1]]);
-  };
-
+  //Função para ir pro próximo
   const goToNext = () => {
-    setVisibleOrder((prev) => [prev[1], prev[2], prev[0]]);
-  };
+    // variável que atualiza os cards visualizados em tela
+    setVisibleOrder((prev) => { // prev é o current, card que está a esquerda da tela
+      const next = (prev[0] + 1) % slides.length; //se estivermos em current = 0 e tamanho da lista = 4 fica... 0+1%4 = 1%4=1(resto).
+      return[
+        next, //passa a ser, pelo calculo acima, 1
+        (next + 1) % slides.length, //1+1%4 = 2%4=2(resto)
+        (next + 2) % slides.length //1+2%4 = 3%4=3(resto)
+      ];
+    });
+  }
 
+  //Função que volta o card
+  const goToPrev = () => {
+    setVisibleOrder((prev) => { //mesma situação
+      const next = (prev[0] - 1 + slides.length) % slides.length; //current=0 array.length=4... 0-1+4%4= 3%4=3(ultimo array da lista)
+      return[
+        next, //3 = ultimo array
+        (next + 1) % slides.length, //3+1%4= 4%4=0(primeiro array)
+        (next + 2) % slides.length //3+2%4= 5%4=1(segundo array)
+      ]
+    });
+  };
+  // inicio da estrutura do UI.
   return (
     <div className="mx-auto w-full px-4 py-8">
       <div className="relative flex items-center justify-center gap-3">
