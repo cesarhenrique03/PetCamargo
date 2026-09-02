@@ -1,6 +1,9 @@
 "use client";
 
 import {useState} from "react";
+import {Button} from "@/app/components/details/button";
+import { FaChevronLeft } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa";
 
 export default function Carrossel() {
     const cards = [
@@ -34,4 +37,11 @@ export default function Carrossel() {
         })
 
      }
+     return (
+        <div className="relative h-130">
+                <Button className={"absolute top-0"}>
+                    <FaChevronLeft className="text-5xl"/>
+                </Button>
+        </div>
+     )
 }
