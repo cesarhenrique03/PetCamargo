@@ -1,9 +1,10 @@
 "use client";
 
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Button} from "@/app/components/details/button";
 import { FaChevronLeft } from "react-icons/fa";
 import { FaChevronRight } from "react-icons/fa";
+import {motion} from "framer-motion";
 
 export default function Carrossel() {
     const cards = [
@@ -13,35 +14,79 @@ export default function Carrossel() {
         {id:3, title:"quarto"}
     ]
 
-    function criarOrdemVisivel(indiceCentral: number) {
-        if (cards.length === 0) return []
+    const viewportRef = useRef<HTMLDivElement>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [indiceCentral, setIndiceCentral] = useState(0);
+    const [deslocamento, setDeslocamento] = useState(0);
 
-        return Array.from({ length: 5 }, (_, posicao) => (
-            (indiceCentral + posicao - 2 + cards.length) % cards.length
-        ))
-    }
+    useEffect(() => {
+        function atualizarDeslocamento() {
+            const viewport = viewportRef.current;
+            const card = cardRef.current;
 
-    // Mantém dois cards antes, o card central e dois cards depois.
-    const [ordemVisivel, setOrdemVisivel] = useState<number[]>(
-        () => criarOrdemVisivel(2)
-    )
+            if (!viewport || !card) return;
 
-    const current = ordemVisivel[2];
+            const margemCentral = (viewport.clientWidth - card.offsetWidth) / 2;
+            setDeslocamento(
+                margemCentral - indiceCentral * (card.offsetWidth + 16)
+            );
+        }
+
+        atualizarDeslocamento();
+        const observer = new ResizeObserver(atualizarDeslocamento);
+        if (viewportRef.current) observer.observe(viewportRef.current);
+        if (cardRef.current) observer.observe(cardRef.current);
+
+        return () => observer.disconnect();
+    }, [indiceCentral]);
 
      function proximo() {
-        setOrdemVisivel((prev) => {
-            if (cards.length === 0) return prev
+        if (cards.length === 0) return;
+        setIndiceCentral((prev) => (prev + 1) % cards.length);
+     }
 
-            const next = (prev[2] + 1) % cards.length
-            return criarOrdemVisivel(next)
-        })
-
+    function anterior() {
+        if (cards.length === 0) return;
+        setIndiceCentral((prev) => (prev - 1 + cards.length) % cards.length);
      }
      return (
-        <div className="relative h-130">
-                <Button className={"absolute top-0"}>
-                    <FaChevronLeft className="text-5xl"/>
-                </Button>
+        <div className="relative w-full overflow-hidden">
+            <div ref={viewportRef} className="relative h-[32rem] w-full">
+                <motion.div
+                    className="absolute left-0 top-0 flex gap-4"
+                    animate={{x: deslocamento}}
+                    transition={{duration: 0.4, ease: "easeInOut"}}
+                >
+                {cards.map((card, index) => {
+                    return (
+                        <motion.div
+                            key={card.id}
+                            ref={index === 0 ? cardRef : undefined}
+                            className="h-[28rem] w-[85vw] max-w-6xl shrink-0 bg-[#F36804] p-8"
+                        >
+                            <span className="text-2xl font-bold text-white">
+                                {cards[card.id].title}
+                            </span>
+                        </motion.div>
+                    )
+                })}
+                </motion.div>
+            </div>
+
+            <Button
+                aria-label="Card anterior"
+                className="absolute left-[2vw] top-1/2 z-10 -translate-y-1/2"
+                onClick={anterior}
+            >
+                <FaChevronLeft className="text-3xl" />
+            </Button>
+            <Button
+                aria-label="Próximo card"
+                className="absolute right-[2vw] top-1/2 z-10 -translate-y-1/2"
+                onClick={proximo}
+            >
+                <FaChevronRight className="text-3xl" />
+            </Button>
         </div>
      )
 }
