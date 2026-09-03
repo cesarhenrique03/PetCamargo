@@ -5,8 +5,10 @@ import {Button} from "@/app/components/details/button";
 import { FaChevronLeft } from "react-icons/fa";
 import { FaChevronRight } from "react-icons/fa";
 import {motion} from "framer-motion";
+import { html } from "framer-motion/client";
 
 export default function Carrossel() {
+    //lista que depois vai ser integrada com banco de dados
     const cards = [
         {id:0, title:"primeiro"},
         {id:1, title:"segundo"},
@@ -14,79 +16,51 @@ export default function Carrossel() {
         {id:3, title:"quarto"}
     ]
 
-    const viewportRef = useRef<HTMLDivElement>(null);
-    const cardRef = useRef<HTMLDivElement>(null);
-    const [indiceCentral, setIndiceCentral] = useState(0);
-    const [deslocamento, setDeslocamento] = useState(0);
+    //função que deixa armazenado o tamanho do card
+    const cardRef1 =  useRef<HTMLDivElement>(null);
+    const cardRef2 = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        function atualizarDeslocamento() {
-            const viewport = viewportRef.current;
-            const card = cardRef.current;
+    //criar sequência de cards na tela
+    function atualizarCards(cardCentral: number) {
+            if (cards.length == 0) return []
 
-            if (!viewport || !card) return;
+            return Array.from({length:5}, (_,index) => (
+                (cardCentral + index - 2 + cards.length) % cards.length
+            ))
+        
+    }
 
-            const margemCentral = (viewport.clientWidth - card.offsetWidth) / 2;
-            setDeslocamento(
-                margemCentral - indiceCentral * (card.offsetWidth + 16)
-            );
-        }
+     //primeira ordem de cards gerados
+    const [ordemVisivel, setOrdemVisivel] = useState<number[]>(
+        () => atualizarCards(0)
+    )
 
-        atualizarDeslocamento();
-        const observer = new ResizeObserver(atualizarDeslocamento);
-        if (viewportRef.current) observer.observe(viewportRef.current);
-        if (cardRef.current) observer.observe(cardRef.current);
+    //card central
+    let cardCentral = ordemVisivel[2]
 
-        return () => observer.disconnect();
-    }, [indiceCentral]);
+    //função próximo card
+    function proximo() {
+        setOrdemVisivel((prev) => {
+            if (cards.length == 0) return prev
 
-     function proximo() {
-        if (cards.length === 0) return;
-        setIndiceCentral((prev) => (prev + 1) % cards.length);
-     }
+            const next = (prev[2] + 1) % cards.length;
+            return atualizarCards(next);
+        })
+    }
 
+    //função card anterior
     function anterior() {
-        if (cards.length === 0) return;
-        setIndiceCentral((prev) => (prev - 1 + cards.length) % cards.length);
-     }
-     return (
-        <div className="relative w-full overflow-hidden">
-            <div ref={viewportRef} className="relative h-[32rem] w-full">
-                <motion.div
-                    className="absolute left-0 top-0 flex gap-4"
-                    animate={{x: deslocamento}}
-                    transition={{duration: 0.4, ease: "easeInOut"}}
-                >
-                {cards.map((card, index) => {
-                    return (
-                        <motion.div
-                            key={card.id}
-                            ref={index === 0 ? cardRef : undefined}
-                            className="h-[28rem] w-[85vw] max-w-6xl shrink-0 bg-[#F36804] p-8"
-                        >
-                            <span className="text-2xl font-bold text-white">
-                                {cards[card.id].title}
-                            </span>
-                        </motion.div>
-                    )
-                })}
-                </motion.div>
-            </div>
+        setOrdemVisivel((prev) => {
+            if (cards.length == 0) return prev
 
-            <Button
-                aria-label="Card anterior"
-                className="absolute left-[2vw] top-1/2 z-10 -translate-y-1/2"
-                onClick={anterior}
-            >
-                <FaChevronLeft className="text-3xl" />
-            </Button>
-            <Button
-                aria-label="Próximo card"
-                className="absolute right-[2vw] top-1/2 z-10 -translate-y-1/2"
-                onClick={proximo}
-            >
-                <FaChevronRight className="text-3xl" />
-            </Button>
+            const next = (prev[2] - 1 + cards.length) % cards.length;
+            return atualizarCards(next);
+        })
+    }
+
+    return (
+        <div>
+
         </div>
-     )
+    )
 }
