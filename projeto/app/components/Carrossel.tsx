@@ -1,115 +1,136 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"; 
+import {useEffect, useRef, useState} from "react";
+import {motion} from "framer-motion";
 import {Button} from "@/app/components/details/button";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import {motion} from "framer-motion";
 
 export function Carrossel() {
-    const cards = [
-        { id: 0, title: "primeiro" },
-        { id: 1, title: "Segundo" },
-        { id: 2, title: "terceiro" },
-        { id: 3, title: "quarto" },
-    ];
+    //lista de objetos para os cards
+    const lista = [
+        {id:0, title:"Primeiro"},
+        {id:1, title:"Segundo"},
+        {id:2, title:"terceiro"},
+        {id:3, title: "quarto"}
+    ]
 
-    const cardRef = useRef<HTMLDivElement>(null);
-    const viewRef = useRef<HTMLDivElement>(null);
+    //Ref para card e viewport
+    const refCard = useRef<HTMLDivElement>(null);
+    const refView = useRef<HTMLDivElement>(null);
 
-    const [deslocamento, setDeslocamento] = useState<number>(0);
-    const [margemCentral, setMargemCentral] = useState<number>(0);
-    const [direcao, setDirecao] = useState<0 | 1 | -1>(0);
+    //deslocamento da animação e margem para centralizar
+    const [deslocamento, setDeslocamento] = useState(0);
+    const [margemCentro, setMargemCentro] = useState(0);
+
+    //verificar animação e direção da animação
     const [animando, setAnimando] = useState(false);
-    const [ordemVisivel, setOrdemVisivel] = useState<number[]>(() => ordemCards(0));
+    const [direcao, setDirecao] = useState<0|1|-1>(0);
 
+    //ordem de cards visiveis na tela do usuário
+    const [ordemVisivel, setOrdemVisivel] = useState<number[]>(() => {
+        return atualizarArray(0);
+    })
+
+    //função após DOM ser carregado
     useEffect(() => {
-        const cardDom = cardRef.current;
-        const viewDom = viewRef.current;
+        const domCard = refCard.current;
+        const domView = refView.current;
 
-        if (!cardDom || !viewDom) return;
+        //se não existir nada dentro das ref, para o código
+        if (!domCard || !domView) return;
 
-        const card = cardDom.getBoundingClientRect();
-        const viewport = window.getComputedStyle(viewDom);
+        const card = domCard.getBoundingClientRect();
+        const viewport = window.getComputedStyle(domView);
 
-        const calcDeslocamento = () => {
-            const gap = Number.parseFloat(viewport.gap || "0");
-            setDeslocamento(gap + card.width);
-        };
+        //calculo do deslocamento horizontal na animação
+        function calcDeslocamento() {
+            const gap = Number.parseFloat(viewport.gap);
+            setDeslocamento(card.width + gap);
+        }
 
-        const calcMargemCentral = () => {
-            const viewWidth = Number.parseFloat(viewport.width || "0");
-            setMargemCentral((viewWidth - card.width) / 2);
-        };
+        //calculo para pegar a margem central
+        function calcMargemCentral() {
+            setMargemCentro((Number.parseFloat(viewport.width) - card.width) / 2);
+        }
 
+        // chama pela primeira vez para calcular o tamanho da tela;
         calcDeslocamento();
         calcMargemCentral();
 
-        const resizeObserver = new ResizeObserver(() => {
+        const tamanhoTela = new ResizeObserver(() => {
             calcDeslocamento();
             calcMargemCentral();
         });
 
-        resizeObserver.observe(cardDom);
-        resizeObserver.observe(viewDom);
+        tamanhoTela.observe(domCard);
+        tamanhoTela.observe(domView);
 
-        return () => resizeObserver.disconnect();
-    }, []);
+        return () => tamanhoTela.disconnect();
+    },[])
 
-    function ordemCards(central: number) {
-        if (cards.length === 0) return [];
+    //função para organizar os cards visiveis para o carrossel
+    function atualizarArray(central: number) {
+        if (lista.length == 0) return [];
 
-        return Array.from({ length: 5 }, (_, index) => {
-            return (central + index - 2 + cards.length) % cards.length;
-        });
+        return Array.from({length: 5}, (_,index) => {
+            return (central + index - 2 + lista.length) % lista.length;
+        })
     }
 
-    function mover(novaDirecao: 1 | -1) {
-        if (animando || cards.length === 0 || deslocamento === 0) return;
-
-        const proximoCentral = (ordemVisivel[2] + novaDirecao + cards.length) % cards.length;
+    //função para travar animação e direcionar a animação de rolagem
+    function mover(novaDirecao: 1|-1) {
+        if(animando||lista.length == 0|| deslocamento == 0) return;
 
         setAnimando(true);
         setDirecao(novaDirecao);
-        setOrdemVisivel(ordemCards(proximoCentral));
+
+        
     }
 
-    return (
-        <div className="relative">
-            <div className="relative h-20">
-                <Button className="left-20" onClick={() => mover(-1)}>
-                    <FaChevronLeft />
+    return(
+        <div className="relative overflow-hidden">
+            <div className="relative">
+                <Button onClick={() => mover(1)}
+                className={"left-20"}>
+                    <FaChevronLeft/>
                 </Button>
 
-                <Button className="right-20" onClick={() => mover(1)}>
-                    <FaChevronRight />
+                <div className="flex gap-20 "
+                style={{transform: `translate(-${deslocamento * 2}px)`}}
+                ref={refView}
+                >
+                    {ordemVisivel.map((dado, index) => {
+                        return(
+                            <motion.div ref={index == 0 ? refCard : undefined}
+                            className="mt-5 mb-5 w-[85vw] rounded-[1.8vw] h-[60vh] shrink-0 bg-[#F36804]"
+                            key= {`${lista[dado].id}-${index}`}
+                            style={{marginLeft: index == 0 ? margemCentro:0}}
+                            initial={false}
+                            animate={{x: deslocamento * direcao}}
+                            transition={{type: "spring", bounce: 0.15, duration: 0.5}}
+                            onAnimationComplete={() => {
+                                if (index !== 2 || lista.length === 0 || direcao === 0) return;
+
+                                setOrdemVisivel((prev) => {
+                                    const next = (prev[2] - direcao + lista.length) % lista.length;
+                                    return atualizarArray(next);
+                                })
+
+                                setAnimando(false);
+                                setDirecao(0);
+                            }}>
+                                <p>{lista[dado].title}</p>
+                            </motion.div>
+                        )
+                    })}
+                </div>
+
+                <Button onClick={() => mover(-1)}
+                className={"right-20"}>
+                    <FaChevronRight/>
                 </Button>
             </div>
 
-            <div className="relative overflow-hidden">
-                    <motion.div
-                        style={{transform: `translateX(-${deslocamento * 2}px)`}}
-                        ref={viewRef}
-                        className="flex gap-10">
-                        {ordemVisivel.map((dado, index) => {
-                            return (
-                                <motion.div style={{marginLeft: index == 0 ? margemCentral : 0}}
-                                    key={`${cards[dado].id}-${index}`}
-                                    ref={index === 0 ? cardRef : undefined}
-                                    className="w-[85vw] shrink-0 bg-[#F36804]"
-                                    initial={false}
-                                    animate={{x: deslocamento * direcao}}
-                                    transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                                    onAnimationComplete={() => {
-                                        setAnimando(false);
-                                        setDirecao(0);
-                                    }}
-                                >
-                                    <p>{cards[dado].title}</p>
-                                </motion.div>
-                            );
-                        })}
-                    </motion.div>
-            </div>
         </div>
-    );
+    )
 }
