@@ -1,156 +1,141 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import {useState, useRef, useEffect} from "react";
+import {motion} from "framer-motion";
+import { Button } from "@/app/components/details/button";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-type Promocao = {
-	id: number;
-	title: string;
-	valor: string;
-};
-
-const listaPromocoes: Promocao[] = [
-	{ id: 0, title: "Promocao 1", valor: "R$ 9,99" },
-	{ id: 1, title: "Promocao 2", valor: "R$ 19,38" },
-	{ id: 2, title: "Promocao 3", valor: "R$ 29,67" },
-	{ id: 3, title: "Promocao 4", valor: "R$ 39,16" },
-];
-
-const quantidadeDeCards = 7;
-const espacamento = 16;
-
-function ordenarCards(primeiro: number, quantidade: number) {
-	return Array.from({ length: quantidadeDeCards }, (_, indice) => (
-		(primeiro + indice - 1 + quantidade) % quantidade
-	));
+//tipo de objeto dentro da lista
+type promocao = {
+	id: number,
+	title: string,
+	preco: string
 }
 
-export function Promocoes() {
-	const viewportRef = useRef<HTMLDivElement>(null);
-	const [ordemVisivel, setOrdemVisivel] = useState(() =>
-		ordenarCards(0, listaPromocoes.length),
-	);
-	const [larguraDoCard, setLarguraDoCard] = useState(0);
-	const [posicao, setPosicao] = useState(0);
-	const [direcao, setDirecao] = useState<1 | -1 | 0>(0);
-	const [animando, setAnimando] = useState(false);
+//lista de itens para os cards
+const lista: promocao[] = [
+	{id: 0, title: "Promoção 1", preco: "R$39,99"},
+	{id: 1, title: "Promoção 2", preco: "R$19,50"},
+	{id: 2, title: "Promoção 3", preco: "R$129,90"},
+	{id: 3, title: "Promoção 4", preco: "R$59,99"},
+	{id: 4, title: "Promoção 5", preco: "R$9,70"},
+	{id: 5, title: "Promoção 6", preco: "R$209,99"}
+]
 
-	const passo = larguraDoCard + espacamento;
+function ordenarCards(primeiro:number) {
+	if (lista.length == 0) return [];
+
+	return Array.from({length: 7}, (_, index) => {
+		return (primeiro + index - 1 + lista.length) % lista.length
+	})
+}
+
+//tamanho para largura do width, implementado com tipo vw = viewWidth
+const flexGap = 16;
+
+export function Promocoes() {
+	//referencia para largura do viewport
+	const refView = useRef<HTMLDivElement>(null);
+
+	//variáveis para verificar animação, direção, deslocamento e gap entre cards
+	const [animando, setAnimando] = useState<true | false>(false);
+	const [direcao, setDirecao] = useState<0 | 1 | -1>(0);
+	const [deslocamento, setDeslocamento] = useState<number>(0);
+	const [largura, setLargura] = useState<number>(0);
+
+	//variável para armazenar ordem atual de cards visiveis
+	const [ordemAtual, setOrdemAtual] = useState<number[]>(() => {
+		return ordenarCards(0);
+	})
 
 	useEffect(() => {
-		const viewport = viewportRef.current;
-		if (!viewport) return;
-		const elementoViewport = viewport;
+		//variável armazena elemento dom do viewport
+		const domView = refView.current;
 
-		function recalcularLargura() {
-			const largura = elementoViewport.getBoundingClientRect().width;
-			const novaLargura = Math.max(
-				0,
-				(largura - espacamento * 4) / 5,
-			);
+		//Verificação para garantir que não está nulo o elemento dom
+		if (!domView) return;
+		const viewport = domView;
 
-			setLarguraDoCard(novaLargura);
-			setPosicao(-(novaLargura + espacamento));
+		//função para calcular espaçamento necessário entre os cards
+		function calcDeslocELarg() {
+			//armazena o width renderizado na tela do usuario
+			const widthView = viewport.getBoundingClientRect().width;
+			//calculo gap
+			const novaLargura = (widthView - flexGap * 4) / 5
+
+			setLargura(novaLargura);
+			setDeslocamento(-(novaLargura + flexGap));
 		}
 
-		recalcularLargura();
+		//chama a primeira vez para calcular o gap
+		calcDeslocELarg();
 
-		const observador = new ResizeObserver(recalcularLargura);
-		observador.observe(elementoViewport);
+		//objeto que vai verificar a mudança do tamanho da tela
+		const tamanhoTela = new ResizeObserver(() => {
+			calcDeslocELarg();
+		})
 
-		return () => observador.disconnect();
-	}, []);
+		//elemento que é observado, precisa ter elemento DOM nele
+		tamanhoTela.observe(domView);
+
+		//desconecta o observador
+		return () => tamanhoTela.disconnect();
+	}, [])
+
+	function encerrarAnimacao() {
+		if (lista.length == 0 || !animando || direcao == 0) return;
+
+		setOrdemAtual((prev) => {
+			const proximo = prev[1 + direcao];
+			return ordenarCards(proximo);
+		})
+
+		setAnimando(false)
+		setDirecao(0)
+	}
 
 	function mover(novaDirecao: 1 | -1) {
-		if (animando || passo === 0 || listaPromocoes.length === 0) return;
+		if (animando || lista.length == 0 || deslocamento == 0) return;
 
 		setAnimando(true);
 		setDirecao(novaDirecao);
-		setPosicao(-(passo * (1 + novaDirecao)));
 	}
 
-	function finalizarAnimacao() {
-		if (!animando || direcao === 0) return;
+	return(
+		<div>
+			<div className="relative">
+				<Button onClick={() => mover(-1)}
+					className={"left-20"}>
+					<FaChevronLeft/>
+				</Button>
+				<div className="overflow-hidden ml-35 mr-35 mb-5">
+					<motion.div className="flex"
+					ref={refView}
+					style={{gap: `${flexGap}px`}}
+					initial={false}
+					animate={{x: deslocamento * (1 + direcao)}}
+					transition={animando ? 
+						{type: "spring", bounce: 0.15, duration: 0.5} :
+						{duration: 0}}
+					onAnimationComplete={encerrarAnimacao}>
+						{ordemAtual.map((dado,index) => {
+							return(
+								<div className="bg-[#F36804] shrink-0 h-[20vw] rounded-[1vw] p-5"
+								key={`${lista[dado].id}-${index}`}
+								style={{width: `${largura}px`}}>
+									<p>{lista[dado].title}</p>
+									<p>{lista[dado].preco}</p>
 
-		setOrdemVisivel((ordemAtual) => {
-			const primeiroAtual = ordemAtual[1];
-			const proximoPrimeiro =
-				(primeiroAtual + direcao + listaPromocoes.length) %
-				listaPromocoes.length;
-
-			return ordenarCards(proximoPrimeiro, listaPromocoes.length);
-		});
-		setPosicao(-passo);
-		setDirecao(0);
-		setAnimando(false);
-	}
-
-	return (
-		<section className="w-full py-8" aria-label="Promocoes">
-			<div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 sm:px-8">
-				<button
-					type="button"
-					aria-label="Promocao anterior"
-					onClick={() => mover(-1)}
-					className="z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F36804] text-white shadow-md transition hover:brightness-95 disabled:opacity-50"
-					disabled={animando || larguraDoCard === 0}
-				>
-					<FaChevronLeft />
-				</button>
-
-				<div
-					ref={viewportRef}
-					className="min-w-0 flex-1 overflow-hidden"
-				>
-					<motion.div
-						className="flex"
-						style={{ gap: `${espacamento}px` }}
-						initial={false}
-						animate={{ x: posicao }}
-						transition={animando ? {
-							type: "spring",
-							bounce: 0.12,
-							duration: 0.55,
-						} : { duration: 0 }}
-						onAnimationComplete={finalizarAnimacao}
-					>
-						{ordemVisivel.map((indice, posicaoDoCard) => {
-							const promocao = listaPromocoes[indice];
-
-							return (
-								<article
-									key={`${promocao.id}-${posicaoDoCard}`}
-									className="flex h-48 shrink-0 flex-col justify-between rounded-xl bg-[#F36804] p-5 text-white shadow-lg sm:h-56"
-									style={{ width: `${larguraDoCard}px` }}
-								>
-									<span className="text-sm font-medium uppercase tracking-wide text-white/75">
-										Oferta especial
-									</span>
-									<div>
-										<h3 className="text-lg font-bold sm:text-xl">
-											{promocao.title}
-										</h3>
-										<p className="mt-2 text-2xl font-black">
-											{promocao.valor}
-										</p>
-									</div>
-								</article>
-							);
+								</div>
+							)
 						})}
 					</motion.div>
 				</div>
-
-				<button
-					type="button"
-					aria-label="Proxima promocao"
-					onClick={() => mover(1)}
-					className="z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F36804] text-white shadow-md transition hover:brightness-95 disabled:opacity-50"
-					disabled={animando || larguraDoCard === 0}
-				>
-					<FaChevronRight />
-				</button>
+				<Button onClick={() => mover(1)}
+					className={"right-20"}>
+					<FaChevronRight/>
+				</Button>
 			</div>
-		</section>
-	);
+		</div>
+	)
 }
