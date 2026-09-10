@@ -102,7 +102,7 @@ export function Carrossel() {
                     {ordemVisivel.map((dado, index) => {
                         return(
                             <motion.div ref={index == 0 ? refCard : undefined}
-                            className="mt-5 mb-5 w-[85vw] rounded-[1.8vw] h-[60vh] shrink-0 bg-[#F36804]"
+                            className="mt-5 mb-5 w-[85vw] rounded-[1.8vw] h-[60vh] shrink-0 bg-[#F36804] p-5"
                             key= {`${lista[dado].id}-${index}`}
                             style={{marginLeft: index == 0 ? margemCentro:0}}
                             initial={false}
