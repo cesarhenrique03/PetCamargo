@@ -3,6 +3,7 @@ import Header from "@/app/components/header";
 import Footer from "@/app/components/footer";
 import {Carrossel} from "@/app/components/Carrossel";
 import {Promocoes} from "@/app/components/Promocoes";
+import Endereco from "@/app/components/Endereco";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
         <Header/>
         <Carrossel/>
         <Promocoes/>
+        <Endereco/>
         <Footer/>
       </div>
   );
