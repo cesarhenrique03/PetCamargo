@@ -16,6 +16,7 @@ export function Carrossel() {
 
     //Ref para card e viewport
     const refCard = useRef<HTMLDivElement>(null);
+    const refViewport = useRef<HTMLDivElement>(null);
     const refView = useRef<HTMLDivElement>(null);
 
     //deslocamento da animação e margem para centralizar
@@ -25,6 +26,7 @@ export function Carrossel() {
     //verificar animação e direção da animação
     const [animando, setAnimando] = useState(false);
     const [direcao, setDirecao] = useState<0|1|-1>(0);
+    const inicioToque = useRef<number | null>(null);
 
     //ordem de cards visiveis na tela do usuário
     const [ordemVisivel, setOrdemVisivel] = useState<number[]>(() => {
@@ -34,36 +36,37 @@ export function Carrossel() {
     //função após DOM ser carregado
     useEffect(() => {
         const domCard = refCard.current;
+        const domViewport = refViewport.current;
         const domView = refView.current;
 
         //se não existir nada dentro das ref, para o código
-        if (!domCard || !domView) return;
+        if (!domCard || !domViewport || !domView) return;
+        const curCard = domCard;
+        const curViewport = domViewport;
+        const curView = domView;
 
-        const card = domCard.getBoundingClientRect();
-        const viewport = window.getComputedStyle(domView);
+        function calcDeslocEMargem() {
 
-        //calculo do deslocamento horizontal na animação
-        function calcDeslocamento() {
-            const gap = Number.parseFloat(viewport.gap);
-            setDeslocamento(card.width + gap);
-        }
+            const card = curCard.getBoundingClientRect().width;
+            const viewport = curView;
 
-        //calculo para pegar a margem central
-        function calcMargemCentral() {
-            setMargemCentro((Number.parseFloat(viewport.width) - card.width) / 2);
+            const margem = (curViewport.getBoundingClientRect().width - card) / 2;
+        
+            const gap = Number.parseFloat(window.getComputedStyle(viewport).gap);
+            setDeslocamento(card + gap);
+            setMargemCentro(margem);
         }
 
         // chama pela primeira vez para calcular o tamanho da tela;
-        calcDeslocamento();
-        calcMargemCentral();
+        calcDeslocEMargem();
 
         const tamanhoTela = new ResizeObserver(() => {
-            calcDeslocamento();
-            calcMargemCentral();
+            calcDeslocEMargem();
         });
 
         tamanhoTela.observe(domCard);
         tamanhoTela.observe(domView);
+        tamanhoTela.observe(domViewport);
 
         return () => tamanhoTela.disconnect();
     },[])
@@ -87,17 +90,34 @@ export function Carrossel() {
         
     }
 
+    function iniciarToque(event: React.PointerEvent<HTMLDivElement>) {
+        inicioToque.current = event.clientX;
+    }
+
+    function encerrarToque(event: React.PointerEvent<HTMLDivElement>) {
+        if (inicioToque.current === null) return;
+
+        const distancia = event.clientX - inicioToque.current;
+        inicioToque.current = null;
+
+        if (Math.abs(distancia) < 40) return;
+        mover(distancia < 0 ? -1 : 1);
+    }
+
     return(
         <div className="relative overflow-hidden">
-            <div className="relative">
+            <div className="relative" ref={refViewport}>
                 <Button onClick={() => mover(1)}
                 className={"left-20"}>
                     <FaChevronLeft/>
                 </Button>
 
                 <div className="flex gap-20 "
-                style={{transform: `translate(-${deslocamento * 2}px)`}}
                 ref={refView}
+                onPointerDown={iniciarToque}
+                onPointerUp={encerrarToque}
+                onPointerCancel={() => { inicioToque.current = null; }}
+                style={{transform: `translate(-${deslocamento * 2}px)`, touchAction: "pan-y"}}
                 >
                     {ordemVisivel.map((dado, index) => {
                         return(

@@ -1,6 +1,7 @@
 import {clsx} from "clsx";
+import type {ButtonHTMLAttributes} from "react";
 
-export function Button({className, children, ...props}) {
+export function Button({className, children, ...props}: ButtonHTMLAttributes<HTMLButtonElement>) {
     return( 
         <button
             type="button"

@@ -35,6 +35,7 @@ const flexGap = 16;
 
 export function Promocoes() {
 	//referencia para largura do viewport
+	const refViewport = useRef<HTMLDivElement>(null);
 	const refView = useRef<HTMLDivElement>(null);
 
 	//variáveis para verificar animação, direção, deslocamento e gap entre cards
@@ -42,6 +43,7 @@ export function Promocoes() {
 	const [direcao, setDirecao] = useState<0 | 1 | -1>(0);
 	const [deslocamento, setDeslocamento] = useState<number>(0);
 	const [largura, setLargura] = useState<number>(0);
+	const inicioToque = useRef<number | null>(null);
 
 	//variável para armazenar ordem atual de cards visiveis
 	const [ordemAtual, setOrdemAtual] = useState<number[]>(() => {
@@ -50,18 +52,18 @@ export function Promocoes() {
 
 	useEffect(() => {
 		//variável armazena elemento dom do viewport
-		const domView = refView.current;
+		const domViewport = refViewport.current;
 
 		//Verificação para garantir que não está nulo o elemento dom
-		if (!domView) return;
-		const viewport = domView;
+		if (!domViewport) return;
+		const viewport = domViewport;
 
 		//função para calcular espaçamento necessário entre os cards
 		function calcDeslocELarg() {
 			//armazena o width renderizado na tela do usuario
 			const widthView = viewport.getBoundingClientRect().width;
-			//calculo gap
-			const novaLargura = (widthView - flexGap * 4) / 5
+			const quantidadeVisivel = widthView < 768 ? 1 : 5;
+			const novaLargura = (widthView - flexGap * (quantidadeVisivel - 1)) / quantidadeVisivel;
 
 			setLargura(novaLargura);
 			setDeslocamento(-(novaLargura + flexGap));
@@ -76,7 +78,7 @@ export function Promocoes() {
 		})
 
 		//elemento que é observado, precisa ter elemento DOM nele
-		tamanhoTela.observe(domView);
+		tamanhoTela.observe(domViewport);
 
 		//desconecta o observador
 		return () => tamanhoTela.disconnect();
@@ -101,6 +103,20 @@ export function Promocoes() {
 		setDirecao(novaDirecao);
 	}
 
+	function iniciarToque(event: React.PointerEvent<HTMLDivElement>) {
+		inicioToque.current = event.clientX;
+	}
+
+	function encerrarToque(event: React.PointerEvent<HTMLDivElement>) {
+		if (inicioToque.current === null) return;
+
+		const distancia = event.clientX - inicioToque.current;
+		inicioToque.current = null;
+
+		if (Math.abs(distancia) < 40) return;
+		mover(distancia < 0 ? 1 : -1);
+	}
+
 	return(
 		<div>
 			<div className="relative">
@@ -108,10 +124,13 @@ export function Promocoes() {
 					className={"left-20"}>
 					<FaChevronLeft/>
 				</Button>
-				<div className="overflow-hidden ml-35 mr-35 mb-5">
+				<div className="overflow-hidden mx-12 md:mx-20 lg:mx-35 mb-5" ref={refViewport}>
 					<motion.div className="flex"
 					ref={refView}
-					style={{gap: `${flexGap}px`}}
+					onPointerDown={iniciarToque}
+					onPointerUp={encerrarToque}
+					onPointerCancel={() => { inicioToque.current = null; }}
+					style={{gap: `${flexGap}px`, touchAction: "pan-y"}}
 					initial={false}
 					animate={{x: deslocamento * (1 + direcao)}}
 					transition={animando ? 
