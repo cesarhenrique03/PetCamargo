@@ -1,46 +1,40 @@
 import Image from "next/image";
 
 export default function Endereco() {
-    return(
-        <section className="w-full">
-            <svg width="0" height="0" aria-hidden="true">
+    return (
+        <section>
+            <svg width={0} height={0} aria-hidden="true">
                 <defs>
-                    <clipPath id="imageClip" clipPathUnits="objectBoundingBox">
-                        <path d="M 0.92,0
-                        C 0.97,0 1,0.03 1,0.08
-                        V 0.92
-                        C 1,0.97 0.97,1 0.92,1
-                        H 0.08
-                        C 0.03,1 0,0.97 0,0.92
-                        Q 0,0.89 0.03,0.86
-                        L 0.86,0.03
-                        Q 0.89,0 0.92,0
-                        Z" />
+                    <clipPath id="clipImagem" clipPathUnits={"objectBoundingBox"}>
+                        <path d="M 1 0 V 1 H 0 V .8 Q 0 .75, .02 .70 L .35 .02 Q .37 0, .38 0  Z"/>
                     </clipPath>
                 </defs>
             </svg>
-            <div className="mx-auto max-w-[80vw]">
-                <h1 className="text-xl font-bold">Endereço</h1>
-                <h2 className="font-semibold">R. Júlia Martins Domingues, 308 – Vossoroca, Votorantim – SP, 18116-545</h2>
-            </div>
-            <div className="w-full bg-[#F36804] flex justify-center items-center p-5">
-                    <div className="relative h-[50vh] w-[40vw]" style={{ clipPath: "url(#imageClip)" }}>
-                        <Image src={"/fachada.png"}
-                        alt="Fachada da loja 1"
-                        fill
-                        sizes="40vw"
-                        className="object-cover"/>
-                    </div>
-                    <div className="relative h-[50vh] w-[40vw]" style={{ clipPath: "url(#imageClip)" }}>
+            <div>
+                <h1>Endereço:</h1>
+                <h2>R. Júlia Martins Domingues, 308 – Vossoroca, Votorantim – SP, 18116-545</h2>
+            </div> 
+                            {/* Estilização padrão mobile */}
+            <div className="w-full flex flex-col gap-5 justify-center items-center bg-[#F36804] py-5
+                            // Estilização para tablet e descktop
+                            md:h-[50vh]">
+                <div className="relative w-[80vw] h-[45vh] rounded-[2vw] overflow-hidden">
+                    <Image src={"/fachada.png"}
+                    alt="Fachada da loja 1"
+                    fill
+                    className="object-cover"/>
+                </div>
+                <div className="relative w-[80vw] h-[45vh] bg-[#F36804] overflow-hidden rounded-[2vw] clipImagem">
+                    <div className="absolute w-[80vw] h-[100%] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 overflow-hidden rounded-[2vw] clipImagem">
                         <Image src={"/fachada 2.png"}
                         alt="Fachada da loja 2"
                         fill
-                        sizes="40vw"
                         className="object-cover"/>
                     </div>
+                </div>
             </div>
-            <div className="mx-auto max-w-[80vw]">
-                <h2 className="font-semibold">Av. São João, 620 – box A2 – Parque Bela Vista, Votorantim – SP, 18110-210</h2>
+            <div>
+                <h1>Av. São João, 620 – box A2 – Parque Bela Vista, Votorantim – SP, 18110-210</h1>
             </div>
         </section>
     )

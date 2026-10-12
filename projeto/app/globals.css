@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+.clipImagem {
+    clip-path: none;
+}
+
+@media (min-width: 768px) {
+    .clipImagem {
+        clip-path: url("#clipImagem");
+    }
+}
