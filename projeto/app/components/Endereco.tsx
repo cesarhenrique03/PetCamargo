@@ -17,15 +17,24 @@ export default function Endereco() {
                             {/* Estilização padrão mobile */}
             <div className="w-full flex flex-col gap-5 justify-center items-center bg-[#F36804] py-5
                             // Estilização para tablet e descktop
-                            md:h-[50vh]">
-                <div className="relative w-[80vw] h-[45vh] rounded-[2vw] overflow-hidden">
+                            md:relative md:h-[50vh] md:py-0">
+                                {/* Estilização para mobile */}
+                <div className="relative w-[80vw] h-[45vh] rounded-[2vw] overflow-hidden
+                                // Estilização para tablet e desktop
+                                md:absolute md:w-[60vw] md:left-[10vw]">
                     <Image src={"/fachada.png"}
                     alt="Fachada da loja 1"
                     fill
                     className="object-cover"/>
                 </div>
-                <div className="relative w-[80vw] h-[45vh] bg-[#F36804] overflow-hidden rounded-[2vw] clipImagem">
-                    <div className="absolute w-[80vw] h-[100%] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 overflow-hidden rounded-[2vw] clipImagem">
+                                {/* Estilização para mobile */}
+                <div className="relative w-[80vw] h-[45vh] bg-[#F36804] overflow-hidden rounded-[2vw] clipImagem
+                                // Estilização para tablet e desktop
+                                md:h-[50vh] md:w-[65vw] md:absolute md:right-[7.5vw]">
+                                    {/* Estilização para mobile */}
+                    <div className="absolute w-[100%] h-[100%] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 overflow-hidden rounded-[2vw] clipImagem
+                                    // Estilização para tablet e desktop
+                                    md:w-[60vw] md:h-[45vh]">
                         <Image src={"/fachada 2.png"}
                         alt="Fachada da loja 2"
                         fill
