@@ -1,18 +1,7 @@
-import Image from "next/image";
-import Header from "@/app/components/header";
-import Footer from "@/app/components/footer";
-import {Carrossel} from "@/app/components/Carrossel";
-import {Promocoes} from "@/app/components/Promocoes";
-import Endereco from "@/app/components/Endereco";
+import Home from "@/app/pages/home/page";
 
-export default function Home() {
+export default function App() {
   return (
-      <div>
-        <Header/>
-        <Carrossel/>
-        <Promocoes/>
-        <Endereco/>
-        <Footer/>
-      </div>
+      <Home/>
   );
 }

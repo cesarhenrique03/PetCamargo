@@ -30,18 +30,19 @@ export default function Endereco() {
                             // telas médias
                             md:relative md:h-[50vh] md:py-0">
                                 {/* telas pequenas */}
-                <div className="relative w-[80vw] h-[45vh] rounded-[2vw] overflow-hidden drop-shadow-[6px_5px_4px_rgba(0,0,0,0.60)]
+                <motion.div className="relative w-[80vw] h-[45vh] rounded-[2vw] overflow-hidden drop-shadow-[6px_5px_4px_rgba(0,0,0,0.60)]
                                 // telas médias
                                 md:absolute md:w-[60vw] md:left-[10vw] md:drop-shadow-none
                                 // telas grandes
-                                lg:w-[45vw] lg:left-[15vw]">
+                                lg:w-[45vw] lg:left-[15vw]"
+                                whileHover={{scale:1.05}}>
                     <a href="https://maps.app.goo.gl/2W9YmX9yXdn33tJ49" target="_blank">
                         <Image src={"/fachada.png"}
                         alt="Fachada da loja 1"
                         fill
                         className="object-cover"/>
                     </a>
-                </div>
+                </motion.div>
                 <motion.div
                     initial="normal"
                     whileHover="hover"
@@ -58,17 +59,19 @@ export default function Endereco() {
                             </clipPath>
                         </defs>
                     </svg>
-                    <motion.div className="relative w-[80vw] h-[45vh] bg-[#F36804] overflow-hidden rounded-[2vw] clipImagem
+                    <motion.div className="relative w-[80vw] h-[45vh] bg-[#F36804] overflow-hidden rounded-[2vw] clipImagem [--hover-scale:1.05]
                                     // telas médias
-                                    md:w-[55vw] md:h-[50vh] md:absolute
+                                    md:w-[55vw] md:h-[50vh] md:absolute md:[--hover-scale:1]
                                     // telas grandes
-                                    lg:w-[50vw]">
+                                    lg:w-[50vw]"
+                                    whileHover={{scale: "var(--hover-scale)"}}>
                                         {/* telas pequenas */}
-                        <motion.div className="absolute w-[100%] h-[100%] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 overflow-hidden rounded-[2vw] clipImagem 
+                        <motion.div className="absolute w-[100%] h-[100%] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 overflow-hidden rounded-[2vw] clipImagem [--hover-scale:1]
                                         // telas médias
-                                        md:w-[50vw] md:h-[45vh]
+                                        md:w-[50vw] md:h-[45vh] md:[--hover-scale:1.05]
                                         // telas grandes
-                                        lg:w-[45vw]">
+                                        lg:w-[45vw]"
+                                        whileHover={{scale: "var(--hover-scale)"}}>
                             <a href="https://maps.app.goo.gl/3TLmbDgW8a5Vo2GG7" target="_blank">
                                 <Image src={"/fachada 2.png"}
                                 alt="Fachada da loja 2"

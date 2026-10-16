@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link"
 import { Search, ShoppingBasket } from "lucide-react";
 
 export default function Header() {
@@ -6,7 +7,7 @@ export default function Header() {
     <header className="w-full bg-[#F36804]">
       <div className="mx-auto flex h-16 items-center gap-6 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <a href="/" className="shrink-0">
+        <Link href="/" className="shrink-0">
           <Image
             src="/logo.jpg"
             alt="Logo da loja"
@@ -14,7 +15,7 @@ export default function Header() {
             height={44}
             className="rounded-full border-2 border-white/70 object-cover"
           />
-        </a>
+        </Link>
 
         {/* Barra de pesquisa */}
         <div className="mx-auto w-full max-w-md flex-1">
