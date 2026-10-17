@@ -1,59 +1,61 @@
 import Image from "next/image";
-import Link from "next/link"
-import { Search, ShoppingBasket } from "lucide-react";
+import Link from "next/link";
+import { CiSearch } from "react-icons/ci";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { LuShoppingBasket } from "react-icons/lu";
 
 export default function Header() {
   return (
-    <header className="w-full bg-[#F36804]">
-      <div className="mx-auto flex h-16 items-center gap-6 px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link href="/" className="shrink-0">
-          <Image
-            src="/logo.jpg"
+    <header className="relative flex w-full items-center justify-between bg-[#F36804] p-2
+                      // telas médias
+                      md:px-5">
+      <div>
+        <Link href="/pages/home">
+          <div>
+            <Image src={"/logo.jpg"}
             alt="Logo da loja"
-            width={44}
-            height={44}
-            className="rounded-full border-2 border-white/70 object-cover"
-          />
-        </Link>
-
-        {/* Barra de pesquisa */}
-        <div className="mx-auto w-full max-w-md flex-1">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Pesquise o produto"
-              className="h-9 w-full rounded-full border-0 bg-white px-4 pr-10 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/60"
-            />
-            <button
-              type="button"
-              aria-label="Pesquisar"
-              className="absolute right-1 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-gray-500 hover:text-gray-700"
-            >
-              <Search size={18} strokeWidth={2.25} />
-            </button>
+            width={50}
+            height={50}
+            className="rounded-[50%]"/>
           </div>
-        </div>
-
-        {/* Ícones e links */}
-        <div className="flex shrink-0 items-center gap-6">
-          <button
-            type="button"
-            aria-label="Carrinho de compras"
-            className="text-white hover:opacity-80"
-          >
-            <ShoppingBasket size={24} strokeWidth={1.75} />
-          </button>
-
-          <nav className="flex items-center gap-4 text-sm font-medium text-white">
-            <a href="/login" className="hover:opacity-80">
-              login
-            </a>
-            <a href="/cadastrar" className="hover:opacity-80">
-              cadastrar
-            </a>
-          </nav>
-        </div>
+        </Link>
+      </div>
+      <div className="flex items-center px-2 rounded-[50vw] bg-white
+                      // telas médias
+                      md:left-1/2 md:-translate-x-1/2 md:absolute md:z-10">
+        <input type="text" 
+        className="w-[30vw] h-[5vh]
+                    // telas médias
+                    md:w-[40vw]"/>
+        <button>
+          <CiSearch size={20} strokeWidth="1" className="text-gray-400"/>
+        </button>
+      </div>
+      <div className="flex gap-5 items-center">
+        <Link href={"/pages/carrinho"}>
+          <LuShoppingBasket size="35"
+          className="text-white"/>
+        </Link>
+        <RxHamburgerMenu size="35" strokeWidth={.5}
+        className="text-white
+                    // telas médias
+                    md:hidden"/>
+        <Link href="/pages/login" 
+        className="hidden
+                  // telas médias
+                  md:inline-block">
+          <h1 className="text-white font-bold">
+            Login
+          </h1>
+        </Link>
+        <Link href={"/pages/cadastro"}
+        className="hidden
+                  // telas médias
+                  md:inline-block">
+          <h1 className="text-white font-bold">
+            Cadastrar
+          </h1>
+        </Link>
       </div>
     </header>
   );

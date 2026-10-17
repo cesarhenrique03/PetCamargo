@@ -4,7 +4,7 @@ import { FaWhatsapp } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#F36804] text-white">
+    <footer className="relative w-full bg-[#F36804] text-white z-10 drop-shadow-[0_-8px_10px_rgba(0,0,0,0.5)]">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-6 text-sm sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         {/* Logo + Telas */}
         <div className="flex items-start gap-3">
