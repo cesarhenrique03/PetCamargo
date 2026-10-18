@@ -26,7 +26,7 @@ export default function Agencia() {
                                         md:p-5 md:justify-center
                                         // telas grandes
                                         lg:text-xl">
-                            <h1 className="w-[40vw] text-end">Somos uma agência do Mercado Livre</h1>
+                            <h1 className="w-[40vw] text-end">Somos <br className="md:hidden"/> uma agência do Mercado Livre</h1>
                             <div className="flex flex-col items-end
                                             // telas médias
                                             md:flex-row md:gap-5 md:items-center">
