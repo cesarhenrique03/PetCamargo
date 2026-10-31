@@ -21,20 +21,25 @@ export default function Agencia() {
                                     // telas médias
                                     md:w-[80vw] md:ml-auto"
                     style={{clipPath: "url(#amarelo)"}}>
-                        <div className="flex flex-col justify-end items-end h-[30vh] p-3
+                        <div className="flex flex-col justify-end items-end h-[30vh] p-2
                                         // telas médias
-                                        md:p-5 md:justify-center
+                                        md:p-5
                                         // telas grandes
-                                        lg:text-xl">
-                            <h1 className="w-[40vw] text-end">Somos <br className="md:hidden"/> uma agência do Mercado Livre</h1>
+                                        lg:text-xl lg:pb-15">
+                            <h1 className="w-[40vw] text-end text-sm
+                                            md:text-lg
+                                            lg:text-xl">Somos <br className="md:hidden"/> uma agência do Mercado Livre</h1>
                             <div className="flex flex-col items-end
                                             // telas médias
                                             md:flex-row md:gap-5 md:items-center">
-                                <p className="font-bold">Na loja do Vossoroca!</p>
+                                <p className="font-bold text-sm
+                                                md:text-xl
+                                                lg:text-2xl">Na loja do Vossoroca!</p>
                                 <Image src={"/svg/mercado-libre.svg"}
                                 alt="icone do mercado livre"
                                 width={50}
-                                height={50}/>
+                                height={50}
+                                id="logoMercadoLivre"/>
                             </div>
                         </div>
                     </div>

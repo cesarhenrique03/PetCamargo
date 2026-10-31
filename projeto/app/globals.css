@@ -4,8 +4,22 @@
     clip-path: none;
 }
 
+#logoMercadoLivre {
+    width:40px;
+}
+
 @media (min-width: 768px) {
     .clipImagem {
         clip-path: url("#clipImagem");
+    }
+
+    #logoMercadoLivre {
+        width: 60px;
+    }
+}
+
+@media (min-width: 1024px) {
+    #logoMercadoLivre {
+        width: 80px;
     }
 }

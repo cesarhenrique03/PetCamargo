@@ -1,10 +1,30 @@
+"use client"
+
 import Image from "next/image";
 import Link from "next/link";
 import { CiSearch } from "react-icons/ci";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { LuShoppingBasket } from "react-icons/lu";
+import {useState} from "react";
+import {motion, spring} from "framer-motion";
+import MenuHeader from "@/app/components/menuHeader";
 
 export default function Header() {
+  const [menuHeader, setMenuHeader] = useState<0 | 1>(0);
+  const [animando, setAnimando] = useState<boolean>(false);
+  
+  function abrirMenu() {
+    if (animando) return;
+
+    if (menuHeader == 0) {
+      setMenuHeader(1);
+      setAnimando(true);
+    } else {
+      setMenuHeader(0);
+      setAnimando(true);
+    }
+  }
+
   return (
     <header className="relative flex w-full items-center justify-between bg-[#F36804] p-2
                       // telas médias
@@ -36,10 +56,11 @@ export default function Header() {
           <LuShoppingBasket size="35"
           className="text-white"/>
         </Link>
-        <RxHamburgerMenu size="35" strokeWidth={.5}
-        className="text-white
-                    // telas médias
-                    md:hidden"/>
+        <button onClick={abrirMenu}
+        className="md:hidden">
+          <RxHamburgerMenu size="35" strokeWidth={.5}
+          className="text-white"/>
+        </button>
         <Link href="/pages/login" 
         className="hidden
                   // telas médias
@@ -57,6 +78,15 @@ export default function Header() {
           </h1>
         </Link>
       </div>
+      <motion.div className="absolute right-0 top-0 z-50"
+      initial = {false}
+      animate = {{x: menuHeader ? 0 : "100%"}}
+      transition={{type: "spring", bounce: 0.15, duration: 0.5}}
+      onAnimationComplete={() => {
+        setAnimando(false);
+      }}>
+        <MenuHeader onClose={abrirMenu}/>
+      </motion.div>
     </header>
   );
 }
