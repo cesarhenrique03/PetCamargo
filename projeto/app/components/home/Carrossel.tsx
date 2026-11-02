@@ -105,44 +105,45 @@ export function Carrossel() {
     }
 
     return(
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden my-5">
             <div className="relative" ref={refViewport}>
                 <Button onClick={() => mover(1)}
                 className={"left-20"}>
                     <FaChevronLeft/>
                 </Button>
 
-                <div className="flex gap-20 "
-                ref={refView}
-                onPointerDown={iniciarToque}
-                onPointerUp={encerrarToque}
-                onPointerCancel={() => { inicioToque.current = null; }}
-                style={{transform: `translate(-${deslocamento * 2}px)`, touchAction: "pan-y"}}
-                >
-                    {ordemVisivel.map((dado, index) => {
-                        return(
-                            <motion.div ref={index == 0 ? refCard : undefined}
-                            className="mt-5 mb-5 w-[85vw] rounded-[1.8vw] h-[60vh] shrink-0 bg-[#F36804] p-5"
-                            key= {`${lista[dado].id}-${index}`}
-                            style={{marginLeft: index == 0 ? margemCentro:0}}
-                            initial={false}
-                            animate={{x: deslocamento * direcao}}
-                            transition={{type: "spring", bounce: 0.15, duration: 0.5}}
-                            onAnimationComplete={() => {
-                                if (index !== 2 || lista.length === 0 || direcao === 0) return;
+                <div style={{transform: `translate(${margemCentro - (deslocamento*2)}px)`, touchAction: "pan-y"}}>
+                    <motion.div className="flex gap-20 "
+                    ref={refView}
+                    
+                    onPointerDown={iniciarToque}
+                    onPointerUp={encerrarToque}
+                    onPointerCancel={() => inicioToque.current = null}
+                    initial={false}
+                    animate={{x: deslocamento * direcao}}
+                    transition={animando
+                        ? {type: "spring", bounce: 0.15, duration: 0.5}
+                        : {duration: 0}}
+                    onAnimationComplete={() => {
+                        if (!animando || direcao === 0) return;
 
-                                setOrdemVisivel((prev) => {
-                                    const next = (prev[2] - direcao + lista.length) % lista.length;
-                                    return atualizarArray(next);
-                                })
-
-                                setAnimando(false);
-                                setDirecao(0);
-                            }}>
-                                <p>{lista[dado].title}</p>
-                            </motion.div>
-                        )
-                    })}
+                        setOrdemVisivel((prev) => {
+                            const novoCentro = (prev[2] - direcao + lista.length) % lista.length;
+                            return atualizarArray(novoCentro);
+                        })
+                        setAnimando(false);
+                        setDirecao(0);
+                    }}>
+                        {ordemVisivel.map((dados, index) => {
+                            return(
+                                <div ref={index == 0 ? refCard : undefined }
+                                key={index}
+                                className="bg-[#F36804] shrink-0 w-[85vw] h-[60vh] rounded-[1vw] p-5">
+                                    {lista[dados].title}
+                                </div>
+                            )
+                        })}
+                    </motion.div>
                 </div>
 
                 <Button onClick={() => mover(-1)}

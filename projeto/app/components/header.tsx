@@ -6,7 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { LuShoppingBasket } from "react-icons/lu";
 import {useState} from "react";
-import {motion, spring} from "framer-motion";
+import {motion} from "framer-motion";
 import MenuHeader from "@/app/components/menuHeader";
 
 export default function Header() {
@@ -26,7 +26,7 @@ export default function Header() {
   }
 
   return (
-    <header className="relative flex w-full items-center justify-between bg-[#F36804] p-2
+    <header className="relative z-20 flex w-full items-center justify-between bg-[#F36804] p-2
                       // telas médias
                       md:px-5">
       <div>

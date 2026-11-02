@@ -21,9 +21,9 @@ export default function Agencia() {
                                     // telas médias
                                     md:w-[80vw] md:ml-auto"
                     style={{clipPath: "url(#amarelo)"}}>
-                        <div className="flex flex-col justify-end items-end h-[30vh] p-2
+                        <div className="flex flex-col justify-center items-end h-[30vh] p-2 pt-10
                                         // telas médias
-                                        md:p-5
+                                        md:p-5 md:justify-end
                                         // telas grandes
                                         lg:text-xl lg:pb-15">
                             <h1 className="w-[40vw] text-end text-sm

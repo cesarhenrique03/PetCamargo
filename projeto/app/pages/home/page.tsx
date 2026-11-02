@@ -7,7 +7,7 @@ import Agencia from "@/app/components/home/Agencia";
 
 export default function App() {
   return (
-      <div>
+      <div className="overflow-hidden">
         <Header/>
         <Carrossel/>
         <Promocoes/>
