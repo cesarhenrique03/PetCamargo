@@ -35,7 +35,7 @@ export default function Agencia() {
                                 <p className="font-bold text-sm
                                                 md:text-xl
                                                 lg:text-2xl">Na loja do Vossoroca!</p>
-                                <Image src={"/svg/mercado-libre.svg"}
+                                <Image src={"/PetCamargo/svg/mercado-libre.svg"}
                                 alt="icone do mercado livre"
                                 width={50}
                                 height={50}

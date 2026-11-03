@@ -32,7 +32,7 @@ export default function Header() {
       <div>
         <Link href="/pages/home">
           <div>
-            <Image src={"/logo.jpg"}
+            <Image src={"/PetCamargo/logo.jpg"}
             alt="Logo da loja"
             width={50}
             height={50}

@@ -37,7 +37,7 @@ export default function Endereco() {
                                 lg:w-[45vw] lg:left-[15vw]"
                                 whileHover={{scale:1.05}}>
                     <a href="https://maps.app.goo.gl/2W9YmX9yXdn33tJ49" target="_blank">
-                        <Image src={"/fachada.png"}
+                        <Image src={"/PetCamargo/fachada.png"}
                         alt="Fachada da loja 1"
                         fill
                         className="object-cover"/>
@@ -73,7 +73,7 @@ export default function Endereco() {
                                         lg:w-[45vw]"
                                         whileHover={{scale: "var(--hover-scale)"}}>
                             <a href="https://maps.app.goo.gl/3TLmbDgW8a5Vo2GG7" target="_blank">
-                                <Image src={"/fachada 2.png"}
+                                <Image src={"/PetCamargo/fachada%202.png"}
                                 alt="Fachada da loja 2"
                                 fill
                                 className="object-cover"/>

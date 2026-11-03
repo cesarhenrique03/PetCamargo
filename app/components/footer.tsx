@@ -13,7 +13,7 @@ export default function Footer() {
                     md:pb-0 md:pr-2 md:border-b-0 md:flex md:justify-center md:items-center md:gap-2 md:border-r">
         <Link href={"/pages/home"}
         className="relative inline-block mx-auto">
-          <Image src={"/logo.jpg"}
+          <Image src={"/PetCamargo/logo.jpg"}
           alt="Logo da loja"
           width={50}
           height={50}
